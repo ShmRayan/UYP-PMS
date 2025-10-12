@@ -4,8 +4,8 @@
 - Ilyas Ait Ali – 300323015
 - Saad Allah Moumine – 300279692
 - Rayan Saadani Hassani – 300289736
-- Mohamed Boudabbous – 300376202
-- Badr Izirri – XXXXXXXX
+- Mohamed Boudabbous - 300376202
+
 
 ## Project Description
 This project is about the system **UYP-PMS (Umelaphi Yaodian Pharmacy Prescription Management System)**.
