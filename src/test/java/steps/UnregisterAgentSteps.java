@@ -1,21 +1,36 @@
 package steps;
 
-import io.cucumber.java.en.*;
+import domain.agent.AgentFactory;
+import domain.agent.AgentRole;
+import domain.agent.AgentStatus;
+import domain.agent.PharmacyAgent;
+import infrastructure.repository.inmemory.InMemoryAgentRepository;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class UnregisterAgentSteps {
 
+    private final InMemoryAgentRepository agentRepo = new InMemoryAgentRepository();
+    private PharmacyAgent agent;
+
     @Given("an administrator is authenticated and an agent exists")
     public void administrator_and_agent_exists() {
-        System.out.println("Administrator authenticated and agent exists");
+        AgentFactory factory = new AgentFactory();
+        agent = factory.createAgent("Laura King", AgentRole.PHARMACIST);
+        agentRepo.save(agent);
     }
 
     @When("the administrator confirms unregistering")
     public void administrator_confirms_unregister() {
-        System.out.println("Administrator confirmed unregistering");
+        agent.deactivate();
+        agentRepo.save(agent);
     }
 
     @Then("the system disables the agent account")
     public void system_disables_agent() {
-        System.out.println("System disabled the agent account");
+        PharmacyAgent disabled = agentRepo.findById(agent.getId());
+        assert disabled.getStatus() == AgentStatus.INACTIVE : "Agent not deactivated!";
+        System.out.println("Agent account deactivated: " + disabled);
     }
 }
