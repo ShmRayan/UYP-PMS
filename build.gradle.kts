@@ -1,33 +1,50 @@
 plugins {
+    id("org.springframework.boot") version "3.3.4"
+    id("io.spring.dependency-management") version "1.1.5"
     id("java")
 }
+
+group = "com.uypms"
+version = "1.0.0"
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-testImplementation("io.cucumber:cucumber-java:7.11.2")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    runtimeOnly("com.h2database:h2")
+    testImplementation("io.cucumber:cucumber-java:7.11.2")
     testImplementation("io.cucumber:cucumber-junit:7.11.2")
     testImplementation("io.cucumber:cucumber-core:7.11.2")
-
-    // JUnit
     testImplementation("junit:junit:4.13.2")
-    
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
 }
+
 sourceSets {
     main {
         java {
-            srcDirs("src/main")
+            srcDirs("src/main/java")
+        }
+        resources {
+            srcDirs("src/main/resources")
         }
     }
     test {
         java {
-            srcDirs("src/test")
+            srcDirs("src/test/java")
+        }
+        resources {
+            srcDirs("src/test/resources")
         }
     }
 }
-
 
 tasks.register<JavaExec>("cucumber") {
     group = "verification"
@@ -35,12 +52,18 @@ tasks.register<JavaExec>("cucumber") {
     classpath = sourceSets["test"].runtimeClasspath
     mainClass.set("io.cucumber.core.cli.Main")
     args = listOf(
-    "--plugin", "pretty",
-    "--plugin", "html:build/reports/cucumber.html",
-    "--glue", "steps",
-    "src/test/resources/contracts"
-)
+        "--plugin", "pretty",
+        "--plugin", "html:build/reports/cucumber.html",
+        "--glue", "steps",
+        "src/test/resources/contracts"
+    )
 }
+
 tasks.test {
+    useJUnitPlatform()
     exclude("**/steps/**")
+}
+
+tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+    jvmArgs = listOf("--enable-preview")
 }
