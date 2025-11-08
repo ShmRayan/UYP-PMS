@@ -45,7 +45,7 @@ public class CreatePrescriptionSteps {
 
     @When("the agent enters prescription details with valid DIN")
     public void agent_enters_prescription_details() {
-        PrescriptionItem item = new PrescriptionItem("Amoxicillin", "12345678", "500mg", "3/day");
+        PrescriptionItem item = new PrescriptionItem("Amoxicillin", "12345678", "500mg", "3/day",30);
         PrescriptionFactory factory = new PrescriptionFactory();
         prescription = factory.create(patient, List.of(item), agent);
         prescriptionRepo.save(prescription);

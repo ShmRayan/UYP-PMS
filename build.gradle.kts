@@ -12,12 +12,18 @@ repositories {
     mavenCentral()
 }
 
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("io.cucumber:cucumber-java:7.11.2")
     testImplementation("io.cucumber:cucumber-junit:7.11.2")
     testImplementation("io.cucumber:cucumber-core:7.11.2")
@@ -27,24 +33,24 @@ dependencies {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs("src/main/java")
-        }
-        resources {
-            srcDirs("src/main/resources")
-        }
-    }
-    test {
-        java {
-            srcDirs("src/test/java")
-        }
-        resources {
-            srcDirs("src/test/resources")
-        }
+configurations {
+    all {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 }
+
+
+sourceSets {
+    main {
+        java.setSrcDirs(listOf("src/main/java"))
+        resources.setSrcDirs(listOf("src/main/resources"))
+    }
+    test {
+        java.setSrcDirs(listOf("src/test/java"))
+        resources.setSrcDirs(listOf("src/test/resources"))
+    }
+}
+
 
 tasks.register<JavaExec>("cucumber") {
     group = "verification"

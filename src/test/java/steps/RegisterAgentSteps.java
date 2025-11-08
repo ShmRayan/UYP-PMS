@@ -1,6 +1,7 @@
 package steps;
 
 import domain.agent.AgentFactory;
+import domain.agent.AgentId;
 import domain.agent.AgentRole;
 import domain.agent.PharmacyAgent;
 import infrastructure.repository.inmemory.InMemoryAgentRepository;
@@ -15,7 +16,7 @@ public class RegisterAgentSteps {
 
     @Given("an administrator is authenticated")
     public void administrator_authenticated() {
-        System.out.println("Administrator authenticated");
+        System.out.println(" Administrator authenticated");
     }
 
     @When("they provide valid agent information")
@@ -27,8 +28,8 @@ public class RegisterAgentSteps {
 
     @Then("the system adds the new agent with credentials")
     public void system_adds_new_agent() {
-        PharmacyAgent found = agentRepo.findById(newAgent.getId());
+        PharmacyAgent found = agentRepo.findById(new AgentId(newAgent.getId()));
         assert found != null : "Agent not saved!";
-        System.out.println("Agent added successfully: " + found);
+        System.out.println("Agent added successfully: " + found.getName());
     }
 }

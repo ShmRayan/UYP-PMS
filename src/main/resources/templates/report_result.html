@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Report Result - UYP Pharmacy</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header>
+    <h1>Report Result</h1>
+</header>
+
+<nav>
+    <a href="/dashboard">Back to Dashboard</a>
+</nav>
+
+<div class="container">
+    <h3>Report Summary:</h3>
+    <p th:text="${report.summarize()}">[Generated report summary will appear here]</p>
+</div>
+
+<footer>© 2025 UYP Pharmacy System</footer>
+</body>
+</html>

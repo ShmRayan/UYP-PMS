@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard - UYP Pharmacy</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header>
+    <h1>UYP Pharmacy Dashboard</h1>
+</header>
+
+<nav>
+    <a href="/prescriptions/create">Create Prescription</a>
+    <a href="/prescriptions/prepare">Prepare Prescription</a>
+    <a href="/reports/generate">Generate Report</a>
+    <a href="/login">Logout</a>
+</nav>
+
+<div class="container">
+    <h2>Welcome to UYP Pharmacy Management System</h2>
+    <p>Select an action from the navigation bar above.</p>
+</div>
+
+<footer>© 2025 UYP Pharmacy System</footer>
+</body>
+</html>

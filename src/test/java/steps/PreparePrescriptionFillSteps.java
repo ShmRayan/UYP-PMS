@@ -32,7 +32,7 @@ public class PreparePrescriptionFillSteps {
         Patient patient = new Patient(new HealthId("H001"), "John Doe", LocalDate.of(1990, 1, 1),
                 new Address("1 King St", "Ottawa", "ON", "K1A0A1"),
                 new InsuranceInfo("POL123", "SunLife", LocalDate.of(2026, 1, 1)), List.of());
-        PrescriptionItem item = new PrescriptionItem("Aspirin", "12345", "500mg", "1/day");
+        PrescriptionItem item = new PrescriptionItem("Aspirin", "12345", "500mg", "1/day",15);
         prescription = new PrescriptionFactory().create(patient, List.of(item), agent);
         prescriptionRepo.save(prescription);
     }

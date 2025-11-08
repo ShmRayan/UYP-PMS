@@ -1,6 +1,7 @@
 package steps;
 
 import domain.agent.AgentFactory;
+import domain.agent.AgentId;
 import domain.agent.AgentRole;
 import domain.agent.PharmacyAgent;
 import infrastructure.repository.inmemory.InMemoryAgentRepository;
@@ -22,14 +23,23 @@ public class UpdateAgentSteps {
 
     @When("they modify the agent information")
     public void modify_agent_info() {
-        existingAgent.updateInfo("Mark Johnson Updated", AgentRole.PHARMACIST);
+        existingAgent = new PharmacyAgent(
+                new AgentId(existingAgent.getId()), 
+                "Mark Johnson Updated",
+                existingAgent.getEmail(),
+                existingAgent.getPassword(),
+                AgentRole.PHARMACIST
+        );
         agentRepo.save(existingAgent);
     }
 
     @Then("the system updates the agent record")
     public void system_updates_agent_record() {
-        PharmacyAgent updated = agentRepo.findById(existingAgent.getId());
+        AgentId id = new AgentId(existingAgent.getId());
+        PharmacyAgent updated = agentRepo.findById(id);
+
         assert updated != null : "Agent not found!";
-        System.out.println("Agent updated successfully: " + updated);
+        System.out.println(" Agent updated successfully: " + updated.getName() +
+                " (" + updated.getRole() + ")");
     }
 }

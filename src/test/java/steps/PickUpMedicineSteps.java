@@ -34,7 +34,7 @@ public class PickUpMedicineSteps {
         AgentFactory factory = new AgentFactory();
         PharmacyAgent agent = factory.createAgent("Bob Smith", AgentRole.PHARMACIST);
 
-        PrescriptionItem item = new PrescriptionItem("Tylenol", "22222", "250mg", "2/day");
+        PrescriptionItem item = new PrescriptionItem("Tylenol", "22222", "250mg", "2/day",20);
         prescription = new PrescriptionFactory().create(p, List.of(item), agent);
         prescription.markPrepared(agent);
         prescription.verify(agent);

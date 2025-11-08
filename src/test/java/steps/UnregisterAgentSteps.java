@@ -1,8 +1,8 @@
 package steps;
 
 import domain.agent.AgentFactory;
+import domain.agent.AgentId;
 import domain.agent.AgentRole;
-import domain.agent.AgentStatus;
 import domain.agent.PharmacyAgent;
 import infrastructure.repository.inmemory.InMemoryAgentRepository;
 import io.cucumber.java.en.Given;
@@ -28,9 +28,11 @@ public class UnregisterAgentSteps {
     }
 
     @Then("the system disables the agent account")
-    public void system_disables_agent() {
-        PharmacyAgent disabled = agentRepo.findById(agent.getId());
-        assert disabled.getStatus() == AgentStatus.INACTIVE : "Agent not deactivated!";
-        System.out.println("Agent account deactivated: " + disabled);
+    public void system_disables_agent() {     
+        AgentId id = new AgentId(agent.getId());
+        PharmacyAgent disabled = agentRepo.findById(id);
+
+        assert disabled != null && !disabled.isActive() : "Agent not deactivated!";
+        System.out.println("✅ Agent account deactivated: " + disabled.getName());
     }
 }

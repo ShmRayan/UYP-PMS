@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Prescription - UYP Pharmacy</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header>
+    <h1>Create Prescription</h1>
+</header>
+
+<nav>
+    <a href="/dashboard">Back to Dashboard</a>
+</nav>
+
+<div class="container">
+    <form action="/prescriptions/create" method="post">
+        <label>Patient ID:</label>
+        <input type="text" name="patientId" required>
+
+        <label>Prescriber ID:</label>
+        <input type="text" name="prescriberId" required>
+
+        <label>DIN:</label>
+        <input type="text" name="din" required>
+
+        <label>Instructions:</label>
+        <textarea name="instructions" required></textarea>
+
+        <label>Quantity:</label>
+        <input type="number" name="quantity" min="1" required>
+
+        <button type="submit">Create Prescription</button>
+    </form>
+</div>
+
+<footer>© 2025 UYP Pharmacy System</footer>
+</body>
+</html>

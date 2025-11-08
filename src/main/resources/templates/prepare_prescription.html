@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Prepare Prescription - UYP Pharmacy</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header>
+    <h1>Prepare Prescription</h1>
+</header>
+
+<nav>
+    <a href="/dashboard">Back to Dashboard</a>
+</nav>
+
+<div class="container">
+    <form action="/prescriptions/prepare" method="post">
+        <label>Prescription ID:</label>
+        <input type="text" name="prescriptionId" required>
+
+        <label>Quantity:</label>
+        <input type="number" name="quantity" min="1" required>
+
+        <label>Lot Number:</label>
+        <input type="text" name="lotNumber" required>
+
+        <label>Expiry Date:</label>
+        <input type="date" name="expiryDate" required>
+
+        <button type="submit">Prepare Prescription</button>
+    </form>
+</div>
+
+<footer>© 2025 UYP Pharmacy System</footer>
+</body>
+</html>
