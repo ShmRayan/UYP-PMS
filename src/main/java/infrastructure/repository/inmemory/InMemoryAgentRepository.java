@@ -22,6 +22,15 @@ public class InMemoryAgentRepository implements AgentRepository {
     }
 
     @Override
+    public PharmacyAgent findByEmail(String email) {
+        // 🔍 Parcours de la map pour trouver l’agent par email
+        return agents.values().stream()
+                .filter(a -> a.getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public void deactivate(PharmacyAgent agent) {
         agent.deactivate();
         agents.put(agent.getId(), agent);

@@ -1,27 +1,28 @@
 package domain.security;
 
-import java.util.Objects;
+import org.springframework.stereotype.Service;
 
+import domain.agent.AgentRepository;
 import domain.agent.PharmacyAgent;
 
+@Service
 public class AuthenticationService {
-    private final UserRepository userRepository;
 
-    public AuthenticationService(UserRepository userRepository) {
-        this.userRepository = Objects.requireNonNull(userRepository);
+    private final AgentRepository agentRepository;
+
+    public AuthenticationService(AgentRepository agentRepository) {
+        this.agentRepository = agentRepository;
     }
 
-    public UserSession authenticate(UserCredentials credentials) {
-        PharmacyAgent agent = userRepository.findByUsername(credentials.getUsername());
+    public PharmacyAgent authenticate(UserCredentials credentials) {
+        PharmacyAgent agent = agentRepository.findByEmail(credentials.getEmail());
 
         if (agent == null)
-            throw new IllegalArgumentException("Unknown username: " + credentials.getUsername());
+            throw new IllegalArgumentException("Adresse e-mail introuvable : " + credentials.getEmail());
 
         if (!agent.getPassword().equals(credentials.getPassword()))
-            throw new SecurityException("Invalid credentials");
+            throw new SecurityException("Mot de passe incorrect");
 
-        UserSession session = new UserSession(agent, 30);
-        userRepository.saveSession(session);
-        return session;
+        return agent; 
     }
 }

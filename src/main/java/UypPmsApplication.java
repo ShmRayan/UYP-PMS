@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "domain.reporting",
         "domain.agent",
         "domain.patient",
+        "domain.security",
         "infrastructure.repository.jpa.entities" 
 })
 

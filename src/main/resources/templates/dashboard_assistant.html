@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Assistant Dashboard - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" alt="uOttawa Logo" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" alt="Pharmacy Icon" class="logo-small">
+    </div>
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+    <div class="header-right">
+        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/prescriptions/create">💊 Create Prescription</a>
+    <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
+</nav>
+
+<main class="container fade-in">
+
+    <section class="welcome-section">
+        <h2>Bienvenue, <span th:text="${user.name}"></span> 👋</h2>
+        <p>Vous pouvez créer et préparer les prescriptions sous la supervision d’un pharmacien.</p>
+    </section>
+
+    <section class="admin-overview">
+        <div class="overview-item" onclick="window.location.href='/prescriptions/create'">
+            <h3>💊 Créer une ordonnance</h3>
+            <p>Ajoutez une nouvelle prescription pour un patient enregistré.</p>
+        </div>
+
+        <div class="overview-item" onclick="window.location.href='/prescriptions/prepare'">
+            <h3>⚗️ Préparer une ordonnance</h3>
+            <p>Préparez les ordonnances selon les instructions du pharmacien.</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>

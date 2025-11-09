@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Accès refusé - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" alt="uOttawa Logo" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" alt="Pharmacy Icon" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <a th:if="${session != null}" href="/logout" class="logout-btn">🚪 Logout</a>
+        <a th:if="${session == null}" href="/login" class="logout-btn">🔐 Login</a>
+    </div>
+</header>
+
+<div class="container fade-in" style="text-align:center;">
+    <h2>🚫 Accès refusé</h2>
+    <p th:text="${errorMessage != null ? errorMessage : 'Vous n’avez pas les permissions nécessaires pour accéder à cette page.'}"></p>
+    <p>Si vous pensez qu’il s’agit d’une erreur, contactez l’administrateur du système.</p>
+    <br>
+    <a href="/dashboard" class="btn">⬅ Retour au tableau de bord</a>
+</div>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>
