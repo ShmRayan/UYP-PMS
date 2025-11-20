@@ -5,23 +5,23 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import application.usecases.command.CreatePrescriptionCommand;
+import application.usecases.command.PreparePrescriptionFillCommand;
+import application.usecases.interfaces.PreparePrescriptionFillUseCase;
+
 import domain.agent.PharmacyAgent;
 import domain.patient.Address;
 import domain.patient.HealthId;
 import domain.patient.InsuranceInfo;
 import domain.patient.Patient;
+
 import domain.prescription.Prescription;
 import domain.prescription.PrescriptionId;
 import domain.prescription.PrescriptionItem;
 import domain.prescription.PrescriptionRepository;
+
 import domain.security.AuthorizationService;
 
 @Controller
@@ -31,13 +31,16 @@ public class PrescriptionController {
 
     private final PrescriptionRepository prescriptionRepository;
     private final AuthorizationService authorizationService;
+    private final PreparePrescriptionFillUseCase preparePrescriptionUseCase;
+
 
     public PrescriptionController(PrescriptionRepository prescriptionRepository,
-                                  AuthorizationService authorizationService) {
+                                  AuthorizationService authorizationService,
+                                  PreparePrescriptionFillUseCase preparePrescriptionUseCase) {
         this.prescriptionRepository = prescriptionRepository;
         this.authorizationService = authorizationService;
+        this.preparePrescriptionUseCase = preparePrescriptionUseCase;
     }
-
 
     @GetMapping("/create")
     public String showCreateForm(Model model, @SessionAttribute("user") PharmacyAgent user) {
@@ -52,9 +55,10 @@ public class PrescriptionController {
     }
 
     @PostMapping("/create")
-    public String createPrescription(@ModelAttribute("command") CreatePrescriptionCommand command,
-                                     @SessionAttribute("user") PharmacyAgent user,
-                                     Model model) {
+    public String createPrescription(
+            @ModelAttribute("command") CreatePrescriptionCommand command,
+            @SessionAttribute("user") PharmacyAgent user,
+            Model model) {
 
         if (!authorizationService.hasPermission(user, "createPrescription")) {
             model.addAttribute("errorMessage", "⛔ Accès refusé : vous n’avez pas les droits nécessaires.");
@@ -62,6 +66,7 @@ public class PrescriptionController {
         }
 
         try {
+            // Item
             PrescriptionItem item = new PrescriptionItem(
                     command.instructions,
                     command.din,
@@ -99,6 +104,39 @@ public class PrescriptionController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Erreur lors de la création : " + e.getMessage());
             return "create_prescription";
+        }
+    }
+
+    @GetMapping("/prepare")
+    public String showPrepareForm(Model model, @SessionAttribute("user") PharmacyAgent user) {
+
+        if (!authorizationService.hasPermission(user, "preparePrescription")) {
+            model.addAttribute("errorMessage", "⛔ Vous n’avez pas la permission de préparer une ordonnance.");
+            return "error-unauthorized";
+        }
+
+        model.addAttribute("command", new PreparePrescriptionFillCommand("", 1, "", LocalDate.now()));
+        return "prepare_prescription";
+    }
+
+    @PostMapping("/prepare")
+    public String preparePrescription(
+            @ModelAttribute("command") PreparePrescriptionFillCommand command,
+            @SessionAttribute("user") PharmacyAgent user,
+            Model model) {
+
+        if (!authorizationService.hasPermission(user, "preparePrescription")) {
+            model.addAttribute("errorMessage", "⛔ Accès refusé : vous n’avez pas les droits nécessaires.");
+            return "error-unauthorized";
+        }
+
+        try {
+            preparePrescriptionUseCase.execute(command);
+            return "redirect:/dashboard";
+
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Erreur lors de la préparation : " + e.getMessage());
+            return "prepare_prescription";
         }
     }
 }

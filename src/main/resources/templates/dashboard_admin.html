@@ -26,7 +26,7 @@
     <a href="/prescriptions/create">💊 Create Prescription</a>
     <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
     <a href="/reports/generate">📊 Generate Report</a>
-    <a href="/agents/register">👥 Gérer les agents</a>
+    <a href="/agents">👥 Manage Agents</a>
 </nav>
 
 <main class="container fade-in">
@@ -36,33 +36,13 @@
         <p>Vous êtes connecté en tant qu’administrateur. Voici un aperçu du système.</p>
     </section>
 
-    <section class="admin-overview">
-        <div class="overview-item" onclick="window.location.href='/agents/register'">
+     <section class="admin-overview" style="display:flex; justify-content:center;">
+
+        <div class="overview-item" onclick="window.location.href='/agents'" style="cursor:pointer; max-width:350px;">
             <h3>👥 Gérer les agents</h3>
             <p>Ajoutez, modifiez ou désactivez les comptes des agents.</p>
         </div>
 
-        <div class="overview-item">
-            <h3>💊 Dernières prescriptions</h3>
-            <table class="recent-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Patient</th>
-                        <th>Date</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="p : ${recentPrescriptions}">
-                        <td th:text="${p.id}">#1001</td>
-                        <td th:text="${p.patientName}">Patient A</td>
-                        <td th:text="${p.date}">2025-11-08</td>
-                        <td th:text="${p.status}">Vérifiée</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </section>
 
 </main>

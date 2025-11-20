@@ -15,8 +15,8 @@ services:
 
   uyp-pms:
     build:
-      context: ../../../../../
-      dockerfile: src/main/java/infrastructure/docker/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: uyp-pms
     ports:
       - "8080:8080"
@@ -24,8 +24,8 @@ services:
       mysql:
         condition: service_healthy
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/uyp_pharmacy
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_PROFILES_ACTIVE=docker

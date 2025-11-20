@@ -20,9 +20,23 @@ public class UpdateAgentUseCaseImpl implements UpdateAgentUseCase {
 
     @Override
     public void execute(UpdateAgentCommand command) {
+
         PharmacyAgent agent = agentRepository.findById(new AgentId(command.agentId));
+
+        // Update name + role
         AgentRole newRole = AgentRole.valueOf(command.role.toUpperCase());
         agent.updateInfo(command.name, newRole);
+
+        // Update email manually
+        if (command.email != null && !command.email.isBlank()) {
+            agent.updateEmail(command.email);
+        }
+
+        // Update password only if provided
+        if (command.newPassword != null && !command.newPassword.isBlank()) {
+            agent.updatePassword(command.newPassword);
+        }
+
         agentRepository.save(agent);
     }
 }

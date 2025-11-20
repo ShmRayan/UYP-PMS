@@ -23,7 +23,8 @@ public class RegisterAgentUseCaseImpl implements RegisterAgentUseCase {
     @Override
     public void execute(RegisterAgentCommand command) {
         AgentRole role = AgentRole.valueOf(command.role.toUpperCase());
-        PharmacyAgent agent = agentFactory.createAgent(command.name, role);
+        PharmacyAgent agent = agentFactory.createAgent(command.name, command.email, role);
+
         agentRepository.save(agent);
     }
 }

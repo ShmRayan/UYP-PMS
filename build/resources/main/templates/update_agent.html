@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier un agent - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <span class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/prescriptions/create">💊 Create Prescription</a>
+    <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
+    <a href="/reports/generate">📊 Generate Report</a>
+    <a href="/agents">👥 Manage Agents</a>
+</nav>
+
+<div class="container fade-in">
+    <div class="edit-header">
+        <a href="/agents" class="back-arrow">← Retour</a>
+        <h2 class="edit-title">✏️ Modifier l’agent</h2>
+    </div>
+
+    <form action="/agents/update" method="post" class="nice-form">
+
+        <input type="hidden" name="agentId" th:value="${agent.id}">
+
+        <div class="form-group">
+            <label>ID de l’agent</label>
+            <input type="text" th:value="${agent.id}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" name="name" th:value="${agent.name}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" th:value="${agent.email}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+            <input type="password" name="newPassword">
+        </div>
+
+        <div class="form-group">
+            <label>Rôle</label>
+
+            <!-- ADMIN (non modifiable) -->
+            <div th:if="${isAdmin}">
+                <input type="text" value="ADMIN" disabled>
+                <input type="hidden" name="role" value="ADMIN">
+            </div>
+
+            <!-- AUTRES RÔLES (modifiable) -->
+            <select name="role" th:if="${!isAdmin}" required>
+                <option value="PHARMACIST" th:selected="${agent.role == 'PHARMACIST'}">Pharmacist</option>
+                <option value="ASSISTANT" th:selected="${agent.role == 'ASSISTANT'}">Assistant</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                💾 Enregistrer les modifications
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>

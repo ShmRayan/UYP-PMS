@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des agents - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" alt="uOttawa Logo" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" alt="Pharmacy Icon" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/prescriptions/create">💊 Create Prescription</a>
+    <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
+    <a href="/reports/generate">📊 Generate Report</a>
+    <a href="/agents" class="active">👥 Manage Agents</a>
+</nav>
+
+<main class="container fade-in">
+
+    <div th:if="${param.error}" class="alert alert-error">
+        <span th:switch="${param.error[0]}">
+            <span th:case="'admin_protected'">🚫 Vous ne pouvez pas désactiver l'administrateur.</span>
+            <span th:case="'already_inactive'">⚠️ Ce compte est déjà désactivé.</span>
+            <span th:case="'unauthorized'">⛔ Action non autorisée.</span>
+            <span th:case="*">❌ Une erreur est survenue.</span>
+        </span>
+    </div>
+
+
+    <div th:if="${param.success}" class="alert alert-success">
+        <span th:switch="${param.success[0]}">
+            <span th:case="'deactivated'">✅ Le compte a été désactivé avec succès.</span>
+        </span>
+    </div>
+
+
+
+    <h2 style="text-align:center; margin-bottom: 25px;">
+        📄 Liste des agents
+    </h2>
+
+    <form method="get" action="/agents" class="search-bar">
+        <input type="text"
+               class="search-input"
+               name="search"
+               placeholder="🔍 Rechercher par nom"
+               th:value="${search}">
+        
+        <button type="submit" class="btn-primary search-btn">Recherchertesto</button>
+    </form>
+
+    <table class="recent-table" style="margin-top:20px; width:100%;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Actif ?</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="a : ${agents}">
+                <td th:text="${a.id}"></td>
+                <td th:text="${a.name}"></td>
+                <td th:text="${a.email}"></td>
+                <td th:text="${a.role}"></td>
+
+                <td>
+                    <span th:if="${a.active}">✔</span>
+                    <span th:if="${!a.active}">✖</span>
+                </td>
+
+                <td>
+                    <span th:if="${a.role == 'ADMIN'}" class="disabled-action">
+                        🔒 Admin protégé
+                    </span>
+
+                    <span th:if="${a.role != 'ADMIN'}">
+                        <a th:href="@{'/agents/update/' + ${a.id}}" class="btn-small">✏️ Modifier</a>
+                        |
+                        <a th:href="@{'/agents/deactivate/' + ${a.id}}"
+                           class="btn-small danger deactivate-link">🚫 Désactiver</a>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="btn1">
+        <a href="/agents/register">
+            ➕ Ajouter un agent
+        </a>
+    </div>
+
+</main>
+
+
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <h3>🚫 Désactiver l’agent ?</h3>
+        <p>Êtes-vous sûr de vouloir désactiver cet agent ?</p>
+
+        <div class="modal-buttons">
+            <button id="confirmYes" class="btn-danger">Oui, désactiver</button>
+            <button id="confirmNo" class="btn-secondary">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let deactivateUrl = null;
+
+document.querySelectorAll(".deactivate-link").forEach(link => {
+    link.addEventListener("click", function (event) {
+        event.preventDefault();
+        deactivateUrl = this.getAttribute("href");
+        document.getElementById("confirmModal").style.display = "flex";
+    });
+});
+
+document.getElementById("confirmNo").onclick = function () {
+    document.getElementById("confirmModal").style.display = "none";
+};
+
+document.getElementById("confirmYes").onclick = function () {
+    window.location.href = deactivateUrl;
+};
+</script>
+
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>

@@ -15,40 +15,37 @@ public class AuthController {
 
     private final AuthenticationService authService;
 
-    // --- Injection du service d’authentification ---
     public AuthController(AuthenticationService authService) {
         this.authService = authService;
     }
 
-    // --- Afficher le formulaire de connexion ---
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("credentials", new UserCredentials("", ""));
         return "login";
     }
 
-    // --- Traiter la connexion ---
     @PostMapping("/login")
     public String login(UserCredentials credentials, HttpSession httpSession, Model model) {
         try {
-            // Authentifie l’agent
             PharmacyAgent agent = authService.authenticate(credentials);
 
-            // Sauvegarde en session pour conserver l’état de connexion
             httpSession.setAttribute("user", agent);
 
-            // Redirection vers le tableau de bord correspondant
             return "redirect:/dashboard";
 
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", "⛔ Ce compte est désactivé !");
+            model.addAttribute("credentials", new UserCredentials("", ""));
+            return "login";
+
         } catch (Exception e) {
-            // En cas d’échec, renvoyer la page login avec un message d’erreur
-            model.addAttribute("error", "Adresse e-mail ou mot de passe incorrect !");
+            model.addAttribute("error", "⛔ Adresse e-mail ou mot de passe incorrect !");
             model.addAttribute("credentials", new UserCredentials("", ""));
             return "login";
         }
     }
 
-    // --- Sélection du bon dashboard selon le rôle ---
     @GetMapping("/dashboard")
     public String dashboard(HttpSession httpSession, Model model) {
         PharmacyAgent user = (PharmacyAgent) httpSession.getAttribute("user");
@@ -62,16 +59,12 @@ public class AuthController {
         model.addAttribute("user", user);
 
         // Redirection vers la vue selon le rôle
-        switch (user.getRole().name().toUpperCase()) {
-            case "ADMIN":
-                return "dashboard_admin";
-            case "PHARMACIST":
-                return "dashboard_pharmacist";
-            case "ASSISTANT":
-                return "dashboard_assistant";
-            default:
-                return "redirect:/login"; // Sécurité
-        }
+        return switch (user.getRole().name().toUpperCase()) {
+            case "ADMIN" -> "dashboard_admin";
+            case "PHARMACIST" -> "dashboard_pharmacist";
+            case "ASSISTANT" -> "dashboard_assistant";
+            default -> "redirect:/login";
+        }; // Sécurité
     }
 
     // --- Déconnexion ---

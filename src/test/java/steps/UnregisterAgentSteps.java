@@ -1,3 +1,4 @@
+/*
 package steps;
 
 import domain.agent.AgentFactory;
@@ -36,3 +37,4 @@ public class UnregisterAgentSteps {
         System.out.println("✅ Agent account deactivated: " + disabled.getName());
     }
 }
+*/

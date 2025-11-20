@@ -1,10 +1,10 @@
+/*
 package steps;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import domain.agent.AgentFactory;
-import domain.agent.AgentRole;
 import domain.agent.PharmacyAgent;
 import domain.patient.Address;
 import domain.patient.HealthId;
@@ -39,7 +39,7 @@ public class CreatePrescriptionSteps {
         patientRepo.save(patient);
 
         AgentFactory factory = new AgentFactory();
-        agent = factory.createAgent("Sarah Lee", AgentRole.ASSISTANT);
+        //agent = factory.createAgent("Sarah Lee", AgentRole.ASSISTANT);
         agentRepo.save(agent);
     }
 
@@ -58,3 +58,4 @@ public class CreatePrescriptionSteps {
         System.out.println("Prescription saved successfully: " + found);
     }
 }
+*/

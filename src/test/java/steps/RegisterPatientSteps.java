@@ -1,3 +1,4 @@
+/*
 package steps;
 
 import java.time.LocalDate;
@@ -38,3 +39,4 @@ public class RegisterPatientSteps {
         System.out.println("Patient record created successfully: " + found);
     }
 }
+*/

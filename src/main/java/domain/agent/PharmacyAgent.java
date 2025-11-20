@@ -13,6 +13,7 @@ public class PharmacyAgent {
     private String name;
     private String email;
     private String password;
+    
 
     @Enumerated(EnumType.STRING)
     private AgentRole role;
@@ -46,6 +47,14 @@ public class PharmacyAgent {
             this.role = newRole;
         }
     }
+    public void updateEmail(String newEmail) {
+        this.email = newEmail;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
 
     // Getters
     public String getId() { return id; }

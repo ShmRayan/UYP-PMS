@@ -1,3 +1,4 @@
+/*
 package steps;
 
 import domain.agent.AgentFactory;
@@ -33,3 +34,4 @@ public class RegisterAgentSteps {
         System.out.println("Agent added successfully: " + found.getName());
     }
 }
+*/

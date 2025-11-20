@@ -1,5 +1,7 @@
 package infrastructure.repository.jpa;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -36,4 +38,10 @@ public class JpaAgentRepositoryImpl implements AgentRepository {
         agent.deactivate();
         jpaRepository.save(agent);
     }
+
+    @Override
+    public List<PharmacyAgent> findAll() {
+        return jpaRepository.findAll();
+    }
+
 }

@@ -1,6 +1,8 @@
 package infrastructure.repository.inmemory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import domain.agent.AgentId;
@@ -35,4 +37,10 @@ public class InMemoryAgentRepository implements AgentRepository {
         agent.deactivate();
         agents.put(agent.getId(), agent);
     }
+
+    @Override
+    public List<PharmacyAgent> findAll() {
+        return new ArrayList<>(agents.values());
+    }
+
 }

@@ -20,6 +20,10 @@ public class AuthenticationService {
         if (agent == null)
             throw new IllegalArgumentException("Adresse e-mail introuvable : " + credentials.getEmail());
 
+        if (!agent.isActive()) {
+            throw new IllegalStateException("Ce compte est désactivé.");
+        }
+
         if (!agent.getPassword().equals(credentials.getPassword()))
             throw new SecurityException("Mot de passe incorrect");
 
