@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Liste des agents - UYP-PMS</title>
+    <link rel="icon" type="image/png" th:href="@{/img/pharmacy-icon.png}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -26,34 +27,34 @@
 </header>
 
 <nav class="navbar">
-    <a href="/dashboard"  class="active">🏠 Dashboard</a>
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/profile" class="active">🛠 Modify Profile</a>
     <a href="/agents">👥 Manage Agents</a>
 </nav>
 
 <main class="container fade-in">
 
+    <!-- Messages erreurs -->
     <div th:if="${param.error}" class="alert alert-error">
         <span th:switch="${param.error[0]}">
-            <span th:case="'admin_protected'">🚫 Vous ne pouvez pas désactiver l'administrateur.</span>
             <span th:case="'already_inactive'">⚠️ Ce compte est déjà désactivé.</span>
             <span th:case="'unauthorized'">⛔ Action non autorisée.</span>
             <span th:case="*">❌ Une erreur est survenue.</span>
         </span>
     </div>
 
-
+    <!-- Messages succès -->
     <div th:if="${param.success}" class="alert alert-success">
         <span th:switch="${param.success[0]}">
             <span th:case="'deactivated'">✅ Le compte a été désactivé avec succès.</span>
         </span>
     </div>
 
-
-
     <h2 style="text-align:center; margin-bottom: 25px;">
         📄 Liste des agents
     </h2>
 
+    <!-- Barre de recherche -->
     <form method="get" action="/agents" class="search-bar">
         <input type="text"
                class="search-input"
@@ -64,6 +65,7 @@
         <button type="submit" class="btn-primary search-btn">Rechercher</button>
     </form>
 
+    <!-- Tableau -->
     <table class="recent-table" style="margin-top:20px; width:100%;">
         <thead>
             <tr>
@@ -89,16 +91,10 @@
                 </td>
 
                 <td>
-                    <span th:if="${a.role == 'ADMIN'}" class="disabled-action">
-                        🔒 Admin protégé
-                    </span>
-
-                    <span th:if="${a.role != 'ADMIN'}">
-                        <a th:href="@{'/agents/update/' + ${a.id}}" class="btn-small">✏️ Modifier</a>
-                        |
-                        <a th:href="@{'/agents/deactivate/' + ${a.id}}"
-                           class="btn-small danger deactivate-link">🚫 Désactiver</a>
-                    </span>
+                    <a th:href="@{'/agents/update/' + ${a.id}}" class="btn-small">✏️ Modifier</a>
+                    |
+                    <a th:href="@{'/agents/deactivate/' + ${a.id}}"
+                       class="btn-small danger deactivate-link">🚫 Désactiver</a>
                 </td>
             </tr>
         </tbody>
@@ -112,7 +108,7 @@
 
 </main>
 
-
+<!-- Modal confirm -->
 <div id="confirmModal" class="modal">
     <div class="modal-content">
         <h3>🚫 Désactiver l’agent ?</h3>
@@ -144,7 +140,6 @@ document.getElementById("confirmYes").onclick = function () {
     window.location.href = deactivateUrl;
 };
 </script>
-
 
 <footer class="footer">
     <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>

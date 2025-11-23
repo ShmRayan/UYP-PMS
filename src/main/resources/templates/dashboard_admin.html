@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard - UYP-PMS</title>
+    <link rel="icon" type="image/png" th:href="@{/img/pharmacy-icon.png}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -23,6 +24,7 @@
 
 <nav class="navbar">
     <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/profile">🛠 Modify Profile</a>
     <a href="/agents">👥 Manage Agents</a>
 </nav>
 
@@ -40,6 +42,10 @@
             <p>Ajoutez, modifiez ou désactivez les comptes des agents.</p>
         </div>
 
+        <div class="overview-item" onclick="window.location.href='/profile'" style="cursor:pointer; max-width:350px;">
+            <h3>🛠 Modifier le Profile</h3>
+            <p>Modifiez votre profile du compte de l'administrateur.</p>
+        </div>
     </section>
 
 </main>

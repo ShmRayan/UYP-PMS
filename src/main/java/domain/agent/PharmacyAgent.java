@@ -13,7 +13,6 @@ public class PharmacyAgent {
     private String name;
     private String email;
     private String password;
-    
 
     @Enumerated(EnumType.STRING)
     private AgentRole role;
@@ -28,25 +27,18 @@ public class PharmacyAgent {
         this.email = email;
         this.password = password;
         this.role = role;
-    }
-    public PharmacyAgent(AgentId id, String name, AgentRole role) {
-        this.id = id.getValue();
-        this.name = name;
-        this.email = name.toLowerCase() + "@uypms.com";
-        this.password = "default123";
-        this.role = role;
         this.active = true;
     }
 
     public void updateInfo(String newName, AgentRole newRole) {
         if (newName != null && !newName.isBlank()) {
             this.name = newName;
-            this.email = newName.toLowerCase() + "@uypms.com";
         }
         if (newRole != null) {
             this.role = newRole;
         }
     }
+
     public void updateEmail(String newEmail) {
         this.email = newEmail;
     }
@@ -54,7 +46,6 @@ public class PharmacyAgent {
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
-
 
     // Getters
     public String getId() { return id; }

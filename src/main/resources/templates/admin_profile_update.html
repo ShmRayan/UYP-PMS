@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Modifier un agent - UYP-PMS</title>
+    <title>Modifier mon profil - UYP-PMS</title>
     <link rel="icon" type="image/png" th:href="@{/img/pharmacy-icon.png}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -26,23 +27,21 @@
 </header>
 
 <nav class="navbar">
-    <a href="/dashboard" class="active">🏠 Dashboard</a>
-    <a href="/profile" class="active">🛠 Modify Profile</a>
+    <a href="/dashboard">🏠 Dashboard</a>
     <a href="/agents">👥 Manage Agents</a>
+    <a href="/profile" class="active">🛠 Modify Profile</a>
 </nav>
 
 <div class="container fade-in">
     <div class="edit-header">
-        <a href="/agents" class="back-arrow">← Retour</a>
-        <h2 class="edit-title">✏️ Modifier l’agent</h2>
+        <a href="/dashboard" class="back-arrow">← Retour</a>
+        <h2 class="edit-title">🛠 Modifier mon profil</h2>
     </div>
 
-    <form action="/agents/update" method="post" class="nice-form">
-
-        <input type="hidden" name="agentId" th:value="${agent.id}">
+    <form action="/profile/update" method="post" class="nice-form">
 
         <div class="form-group">
-            <label>ID de l’agent</label>
+            <label>ID</label>
             <input type="text" th:value="${agent.id}" disabled>
         </div>
 
@@ -57,32 +56,18 @@
         </div>
 
         <div class="form-group">
-            <label>Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+            <label>Nouveau mot de passe (optionnel)</label>
             <input type="password" name="newPassword">
         </div>
 
         <div class="form-group">
             <label>Rôle</label>
-
-            <!-- ADMIN (non modifiable) -->
-            <div th:if="${isAdmin}">
-                <input type="text" value="ADMIN" disabled>
-                <input type="hidden" name="role" value="ADMIN">
-            </div>
-
-            <!-- AUTRES RÔLES (modifiable) -->
-            <select name="role" th:if="${!isAdmin}" required>
-                <option value="PHARMACIST" th:selected="${agent.role == 'PHARMACIST'}">Pharmacist</option>
-                <option value="ASSISTANT" th:selected="${agent.role == 'ASSISTANT'}">Assistant</option>
-            </select>
+            <input type="text" value="ADMIN" disabled>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn-primary">
-                💾 Enregistrer les modifications
-            </button>
+            <button type="submit" class="btn-primary">💾 Enregistrer</button>
         </div>
-
     </form>
 </div>
 

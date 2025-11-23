@@ -55,7 +55,10 @@ public class AgentController {
                             @SessionAttribute("user") PharmacyAgent user,
                             Model model) {
 
-        List<PharmacyAgent> all = agentRepository.findAll();
+        List<PharmacyAgent> all = agentRepository.findAll()
+            .stream()
+            .filter(agent -> agent.getRole() != AgentRole.ADMIN)
+            .toList();
 
         if (search != null && !search.isEmpty()) {
             all = all.stream()
@@ -68,7 +71,6 @@ public class AgentController {
 
         return "agents_list";
     }
-
 
     @GetMapping("/register")
     public String registerForm(

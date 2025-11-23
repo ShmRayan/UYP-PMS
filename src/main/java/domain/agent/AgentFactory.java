@@ -5,20 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AgentFactory {
 
-    private int adminCount = 1;
-    private int pharmacistCount = 1;
-    private int assistantCount = 1;
-
-    public PharmacyAgent createAgent(String name, String email, AgentRole role) {
-
-        String id;
-
-        switch (role) {
-            case ADMIN -> id = String.format("admin-%03d", adminCount++);
-            case PHARMACIST -> id = String.format("pharm-%03d", pharmacistCount++);
-            case ASSISTANT -> id = String.format("assist-%03d", assistantCount++);
-            default -> throw new IllegalArgumentException("Role inconnu");
-        }
+    public PharmacyAgent createAgentWithCustomId(String id, String name, String email, AgentRole role) {
 
         String defaultPassword = switch (role) {
             case ADMIN -> "admin123";
