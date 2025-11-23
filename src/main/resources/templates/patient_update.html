@@ -15,12 +15,17 @@
         <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
     </div>
     <div class="header-center"><h1>Update Patient</h1></div>
-    <div class="header-right"><a href="/logout" class="logout-btn">Logout</a></div>
+    <div class="header-right">
+        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
 </header>
 
 <nav class="navbar">
-    <a href="/dashboard">Dashboard</a>
-    <a href="/patients" class="active">Manage Patients</a>
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/patients">👥 Manage Patients</a>
+    <a href="/prescriptions">📄 Manage Prescriptions</a>
+    <a href="/reports/generate">📊 Generate Report</a>
 </nav>
 
 <main class="container fade-in">

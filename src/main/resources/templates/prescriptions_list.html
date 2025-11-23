@@ -20,16 +20,24 @@
     </div>
 
     <div class="header-right">
+        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
         <a href="/logout" class="logout-btn">🚪 Logout</a>
     </div>
 </header>
 
+<!-- NAVBAR ADAPTÉE AU RÔLE -->
 <nav class="navbar">
-    <a href="/dashboard">🏠 Dashboard</a>
-    <a href="/patients">🧑‍⚕️ Patients</a>
-    <a href="/prescriptions/create">💊 Create Prescription</a>
-    <a href="/prescriptions" class="active">📄 Prescriptions</a>
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+
+    <!-- Pharmacien -->
+    <a th:if="${user.role.name() == 'PHARMACIST'}" href="/patients">👥 Manage Patients</a>
+    <a th:if="${user.role.name() == 'PHARMACIST'}" href="/prescriptions">📄 Manage Prescriptions</a>
+    <a th:if="${user.role.name() == 'PHARMACIST'}" href="/reports/generate">📊 Generate Report</a>
+
+    <!-- Assistant -->
+    <a th:if="${user.role.name() == 'ASSISTANT'}" href="/prescriptions">📄 Manage Prescriptions</a>
 </nav>
+
 
 <main class="container fade-in">
 
@@ -63,7 +71,7 @@
 
             <td>
 
-                <!-- PREPARE BUTTON -->
+                <!-- ASSISTANT OU PHARMACIEN → Préparer -->
                 <button type="button"
                         th:if="${p.status.name() == 'NEW'}"
                         class="btn-warning"
@@ -72,14 +80,20 @@
                     Prepare
                 </button>
 
-                <!-- VERIFY -->
-                <form th:if="${p.status.name() == 'PREPARED'}"
+                <!-- PHARMACIEN → Verify -->
+                <form th:if="${p.status.name() == 'PREPARED' and user.role.name() == 'PHARMACIST'}"
                       th:action="@{/prescriptions/{id}/verify(id=${p.id.value})}"
                       method="post">
                     <button class="btn-primary">Verify</button>
                 </form>
 
-                <!-- PICKUP  -->
+                <!-- ASSISTANT → Message d’attente -->
+                <span th:if="${p.status.name() == 'PREPARED' and user.role.name() == 'ASSISTANT'}"
+                      style="color: #888;">
+                    ⏳ En attente de vérification du pharmacien
+                </span>
+
+                <!-- PICKUP POUR LES DEUX (seulement après VERIFIED) -->
                 <button type="button"
                         th:if="${p.status.name() == 'VERIFIED'}"
                         class="btn-success"
@@ -102,6 +116,8 @@
 
 </main>
 
+
+<!-- MODAL PREPARE -->
 <div id="prepareModal" class="modal">
     <div class="modal-content">
 
@@ -128,6 +144,7 @@
     </div>
 </div>
 
+<!-- MODAL PICKUP -->
 <div id="pickupModal" class="modal">
     <div class="modal-content">
 
@@ -136,7 +153,7 @@
         <form id="pickupForm" method="post">
 
             <div class="form-group">
-                <label>Notes / Résumé de la discussion :</label>
+                <label>Notes / Résumé :</label>
                 <textarea name="pickupNotes" rows="4" required></textarea>
             </div>
 
@@ -154,11 +171,9 @@
 
     function openPrepareModal(button) {
         const id = button.getAttribute("data-id");
-        const modal = document.getElementById("prepareModal");
         const form = document.getElementById("prepareForm");
-
         form.action = "/prescriptions/" + id + "/prepare";
-        modal.style.display = "flex";
+        document.getElementById("prepareModal").style.display = "flex";
     }
 
     function closePrepareModal() {
@@ -167,11 +182,9 @@
 
     function openPickupModal(button) {
         const id = button.getAttribute("data-id");
-        const modal = document.getElementById("pickupModal");
         const form = document.getElementById("pickupForm");
-
         form.action = "/prescriptions/" + id + "/pickup";
-        modal.style.display = "flex";
+        document.getElementById("pickupModal").style.display = "flex";
     }
 
     function closePickupModal() {

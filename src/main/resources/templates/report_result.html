@@ -2,37 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Résultat du rapport - UYP-PMS</title>
+    <title>Drug Report - UYP-PMS</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
 <header class="main-header">
     <div class="header-left">
-        <img th:src="@{/img/uottawa-logo.png}" alt="uOttawa Logo" class="logo">
-        <img th:src="@{/img/pharmacy-icon.png}" alt="Pharmacy Icon" class="logo-small">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
     </div>
     <div class="header-center">
         <h1>Umelaphi Yaodian Pharmacy Management System</h1>
     </div>
     <div class="header-right">
+        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
         <a href="/logout" class="logout-btn">🚪 Logout</a>
     </div>
 </header>
 
 <nav class="navbar">
-    <a href="/dashboard">🏠 Dashboard</a>
-    <a href="/prescriptions/create">💊 Create Prescription</a>
-    <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/patients">👥 Manage Patients</a>
+    <a href="/prescriptions">📄 Manage Prescriptions</a>
     <a href="/reports/generate">📊 Generate Report</a>
 </nav>
 
-<div class="container fade-in">
-    <h2>Résultat du rapport</h2>
-    <p th:text="${report.summarize()}">[Le résumé généré apparaîtra ici]</p>
+<main class="container fade-in">
 
-    <a href="/reports/generate" class="btn">↩️ Nouveau rapport</a>
-</div>
+    <h2>📊 Drug Usage Report</h2>
+
+    <div class="report-box">
+        <p><strong>DIN :</strong> <span th:text="${report.drugDIN}"></span></p>
+        <p><strong>Période :</strong> <span th:text="${report.period}"></span></p>
+        <p><strong>Nombre de prescriptions :</strong> <span th:text="${report.totalPrescriptions}"></span></p>
+        <p><strong>Quantité totale prescrite :</strong> <span th:text="${report.totalQuantity}"></span></p>
+    </div>
+
+    <h3>📋 Détails des prescriptions</h3>
+
+    <table class="recent-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Quantité</th>
+            <th>Drug Name</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="p : ${prescriptions}">
+            <td th:text="${p.id.value}"></td>
+            <td th:text="${p.patient.name}"></td>
+            <td th:text="${p.date}"></td>
+            <td th:text="${p.items[0].quantity}"></td>
+            <td th:text="${p.items[0].drugName}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="btn1">
+        <a href="/reports/generate">↩️ Generate another report</a>
+    </div>
+
+</main>
 
 <footer class="footer">
     <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>

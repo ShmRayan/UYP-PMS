@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Générer un rapport - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <span class="user-info"></span>
+        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/patients">👥 Manage Patients</a>
+    <a href="/prescriptions">📄 Manage Prescriptions</a>
+    <a href="/reports/generate" class="active">📊 Generate Report</a>
+</nav>
+
+<main class="container fade-in">
+
+    <div class="edit-header">
+        <h2 class="edit-title">📊 Générer un rapport</h2>
+    </div>
+
+    <form action="/reports/generate" method="post" class="nice-form">
+
+        <div class="form-group">
+            <label>Drug DIN</label>
+            <input type="text" name="din" placeholder="Ex : 02212345" required>
+        </div>
+
+        <div class="form-group">
+            <label>Date de début</label>
+            <input type="date" name="startDate" required>
+        </div>
+
+        <div class="form-group">
+            <label>Date de fin</label>
+            <input type="date" name="endDate" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">📈 Générer le rapport</button>
+        </div>
+
+    </form>
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>

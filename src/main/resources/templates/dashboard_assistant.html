@@ -22,30 +22,26 @@
 </header>
 
 <nav class="navbar">
-    <a href="/dashboard">🏠 Dashboard</a>
-    <a href="/prescriptions/create">💊 Create Prescription</a>
-    <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
-    <a href="/reports/generate">📊 Generate Report</a>
-    <a href="/agents">👥 Manage Agents</a>
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/prescriptions">📄 Manage Prescriptions</a>
 </nav>
 
 <main class="container fade-in">
 
     <section class="welcome-section">
         <h2>Bienvenue, <span th:text="${user.name}"></span> 👋</h2>
-        <p>Vous pouvez créer et préparer les prescriptions sous la supervision d’un pharmacien.</p>
+        <p>Vous pouvez gérer les prescriptions sous la supervision d’un pharmacien.</p>
     </section>
 
-    <section class="admin-overview">
-        <div class="overview-item" onclick="window.location.href='/prescriptions/create'">
-            <h3>💊 Créer une ordonnance</h3>
-            <p>Ajoutez une nouvelle prescription pour un patient enregistré.</p>
+    <section class="admin-overview" style="display:flex; justify-content:center;">
+
+        <div class="overview-item"
+             onclick="window.location.href='/prescriptions'"
+             style="cursor:pointer; max-width:350px;">
+            <h3>📄 Gérer les ordonnances</h3>
+            <p>Créer, visualiser et suivre les prescriptions des patients.</p>
         </div>
 
-        <div class="overview-item" onclick="window.location.href='/prescriptions/prepare'">
-            <h3>⚗️ Préparer une ordonnance</h3>
-            <p>Préparez les ordonnances selon les instructions du pharmacien.</p>
-        </div>
     </section>
 
 </main>
