@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header class="main-header">
     <div class="header-left">
         <img th:src="@{/img/uottawa-logo.png}" alt="uOttawa Logo" class="logo">
@@ -16,41 +17,56 @@
         <h1>Umelaphi Yaodian Pharmacy Management System</h1>
     </div>
     <div class="header-right">
-        <span th:if="${user != null}" class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <span class="user-info">👤 <strong th:text="${user.name}"></strong></span>
         <a href="/logout" class="logout-btn">🚪 Logout</a>
     </div>
 </header>
 
+<!-- ===== NAVBAR ===== -->
 <nav class="navbar">
-    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/dashboard" class="active">🏠 Dashboard</a>
+    <a href="/patients">👥 Manage Patients</a>
     <a href="/prescriptions/create">💊 Create Prescription</a>
     <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
+    <a href="/prescriptions/verify">🔍 Verify Prescription</a>
     <a href="/reports/generate">📊 Generate Report</a>
-    <a href="/agents">👥 Manage Agents</a>
 </nav>
 
+<!-- ===== MAIN ===== -->
 <main class="container fade-in">
 
     <section class="welcome-section">
         <h2>Bienvenue, <span th:text="${user.name}"></span> 👋</h2>
-        <p>Gérez les ordonnances, préparez les médicaments et générez des rapports sur les prescriptions.</p>
+        <p>Gérez les patients, créez ou préparez les ordonnances, et générez des rapports.</p>
     </section>
 
     <section class="admin-overview">
+
+        <div class="overview-item" onclick="window.location.href='/patients'">
+            <h3>👥 Gérer les patients</h3>
+            <p>Consulter, ajouter ou mettre à jour les informations des patients.</p>
+        </div>
+
         <div class="overview-item" onclick="window.location.href='/prescriptions/create'">
             <h3>💊 Créer une ordonnance</h3>
-            <p>Enregistrez une nouvelle prescription pour un patient existant.</p>
+            <p>Créez une nouvelle prescription pour un patient existant.</p>
         </div>
 
         <div class="overview-item" onclick="window.location.href='/prescriptions/prepare'">
             <h3>⚗️ Préparer une ordonnance</h3>
-            <p>Accédez à la liste des ordonnances en attente de préparation.</p>
+            <p>Préparez les ordonnances en attente.</p>
+        </div>
+
+        <div class="overview-item" onclick="window.location.href='/prescriptions/verify'">
+            <h3>🔍 Vérifier une ordonnance</h3>
+            <p>Validez les ordonnances préparées.</p>
         </div>
 
         <div class="overview-item" onclick="window.location.href='/reports/generate'">
             <h3>📊 Générer un rapport</h3>
-            <p>Analysez les tendances et les statistiques de prescription.</p>
+            <p>Analysez les données de prescription.</p>
         </div>
+
     </section>
 
 </main>

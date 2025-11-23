@@ -1,51 +1,67 @@
 package application.usecases.implementation;
 
-import java.time.LocalDate;
-import java.util.List;
+import application.usecases.command.CreatePrescriptionCommand;
+import application.usecases.interfaces.CreatePrescriptionUseCase;
+
+import domain.patient.*;
+import domain.prescription.*;
+
+import domain.external.ExternalRegistryVerifier;
+import domain.external.DrugDatabaseVerifier;
 
 import org.springframework.stereotype.Service;
 
-import application.usecases.command.CreatePrescriptionCommand;
-import application.usecases.interfaces.CreatePrescriptionUseCase;
-import domain.agent.AgentId;
-import domain.agent.AgentRole;
-import domain.agent.PharmacyAgent;
-import domain.patient.Patient;
-import domain.prescription.Prescription;
-import domain.prescription.PrescriptionFactory;
-import domain.prescription.PrescriptionItem;
-import domain.prescription.PrescriptionRepository;
+import java.util.List;
 
 @Service
 public class CreatePrescriptionUseCaseImpl implements CreatePrescriptionUseCase {
 
+    private final PatientRepository patientRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final PrescriptionFactory prescriptionFactory;
 
-    public CreatePrescriptionUseCaseImpl(PrescriptionRepository prescriptionRepository,
-                                         PrescriptionFactory prescriptionFactory) {
+    public CreatePrescriptionUseCaseImpl(
+            PatientRepository patientRepository,
+            PrescriptionRepository prescriptionRepository,
+            PrescriptionFactory prescriptionFactory
+    ) {
+        this.patientRepository = patientRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.prescriptionFactory = prescriptionFactory;
     }
 
     @Override
     public void execute(CreatePrescriptionCommand command) {
-        // Création du patient (temporaire)
-        Patient patient = new Patient(null, command.patientId, LocalDate.now(), null, null, List.of());
 
-        // Création de l’agent prescripteur
-        PharmacyAgent prescriber = new PharmacyAgent(new AgentId(), command.prescriberId, AgentRole.PHARMACIST);
+        Patient patient = patientRepository.findByHealthId(new HealthId(command.patientId));
+        if (patient == null)
+            throw new IllegalArgumentException("❌ Patient introuvable.");
+
+        if (!ExternalRegistryVerifier.isValidPrescriber(command.prescriberId))
+            throw new IllegalArgumentException("❌ Prescriber non confirmé dans le registre CPSO.");
+
+        if (!DrugDatabaseVerifier.isValidDIN(command.din))
+            throw new IllegalArgumentException("❌ DIN inexistant dans la Drug Product Database.");
 
         PrescriptionItem item = new PrescriptionItem(
-        "Medication",
-        command.din,
-        "1 pill/day",
-        command.instructions,
-        command.quantity
-    );
+                command.drugName,
+                command.din,
+                command.strength,
+                command.adminMethod,
+                command.frequency,
+                command.instructions,
+                command.quantity,
+                command.refillType,
+                command.refillCount
+        );
 
-        // Création et sauvegarde de la prescription
-        Prescription prescription = prescriptionFactory.create(patient, List.of(item), prescriber);
+        Prescription prescription =
+                prescriptionFactory.createExternalPrescriber(
+                        patient,
+                        List.of(item),
+                        command.prescriberId
+                );
+
         prescriptionRepository.save(prescription);
     }
 }

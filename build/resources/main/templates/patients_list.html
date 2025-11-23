@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Patients - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <span class="user-info">👤 <strong th:text="${user.name}"></strong></span>
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/patients" class="active">🧑‍⚕️ Manage Patients</a>
+    <a href="/prescriptions/create">💊 Create Prescription</a>
+    <a href="/prescriptions/prepare">⚗️ Prepare Prescription</a>
+    <a href="/prescriptions/verify">🔍 Verify Prescription</a>
+    <a href="/reports/generate">📊 Generate Report</a>
+</nav>
+
+<main class="container fade-in">
+
+    <h2 style="text-align:center; margin-bottom:25px;">
+        🧑‍⚕️ Liste des patients
+    </h2>
+
+    <form method="get" action="/patients" class="search-bar">
+        <input type="text" name="search" class="search-input"
+               placeholder="🔍 Rechercher par nom ou Health ID"
+               th:value="${search}">
+        <button type="submit" class="btn-primary search-btn">Rechercher</button>
+    </form>
+
+    <table class="recent-table">
+        <thead>
+            <tr>
+                <th>Health ID</th>
+                <th>Nom</th>
+                <th>Date naissance</th>
+                <th>Adresse</th>
+                <th>Genre</th>
+                <th>Langue</th>
+                <th>Assureur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="p : ${patients}">
+                <td th:text="${p.healthId.value}"></td>
+                <td th:text="${p.name}"></td>
+                <td th:text="${p.dateOfBirth}"></td>
+
+                <td th:text="${p.address.street + ', ' + p.address.city}"></td>
+
+                <td th:text="${p.gender}"></td>
+
+                <td th:text="${p.languagePreference}"></td>
+
+                <td th:text="${p.insuranceInfo.provider}"></td>
+
+                <td>
+                    <a th:href="@{'/patients/update/' + ${p.healthId.value}}" class="btn-small">
+                        ✏️ Modifier
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="btn1">
+        <a href="/patients/register">➕ Ajouter un patient</a>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>

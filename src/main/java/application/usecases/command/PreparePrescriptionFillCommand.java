@@ -8,7 +8,12 @@ public class PreparePrescriptionFillCommand {
     public String lotNumber;
     public LocalDate expiryDate;
 
-    public PreparePrescriptionFillCommand(String prescriptionId, int quantity, String lotNumber, LocalDate expiryDate) {
+    public PreparePrescriptionFillCommand(
+            String prescriptionId,
+            int quantity,
+            String lotNumber,
+            LocalDate expiryDate
+    ) {
         this.prescriptionId = prescriptionId;
         this.quantity = quantity;
         this.lotNumber = lotNumber;

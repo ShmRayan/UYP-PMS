@@ -1,34 +1,22 @@
 package domain.prescription;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public final class PrescriptionId {
+public class PrescriptionId {
+
+    private static final AtomicInteger COUNTER = new AtomicInteger(1);
     private final String value;
 
     public PrescriptionId() {
-        this.value = UUID.randomUUID().toString();
+        int number = COUNTER.getAndIncrement();
+        this.value = String.format("PRESC-%03d", number);
     }
 
     public PrescriptionId(String value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = value;
     }
 
     public String getValue() {
         return value;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PrescriptionId)) return false;
-        PrescriptionId other = (PrescriptionId) o;
-        return value.equals(other.value);
-    }
-
-    @Override
-    public int hashCode() { return Objects.hash(value); }
-
-    @Override
-    public String toString() { return value; }
 }

@@ -10,4 +10,6 @@ public interface PrescriptionRepository {
     Prescription findById(PrescriptionId id);
     List<Prescription> findByPatient(Patient patient);
     List<Prescription> findByDINAndPeriod(String din, ReportPeriod period);
+    List<Prescription> findAll();
+    String findLastId();
 }

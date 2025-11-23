@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créer une ordonnance - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/patients">🧑‍⚕️ Patients</a>
+    <a href="/prescriptions/create" class="active">💊 Create Prescription</a>
+</nav>
+
+<main class="container fade-in">
+
+    <div class="edit-header">
+        <a href="/prescriptions" class="back-arrow">← Retour</a>
+        <h2>Créer une ordonnance</h2>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form action="/prescriptions/create" method="post" class="nice-form">
+
+        <h3 class="section-title">👤 Informations du patient</h3>
+
+        <div class="form-group">
+            <label>Patient</label>
+            <select id="patientSelect" name="patientId" required>
+                <option value="">-- Choisir un patient --</option>
+                <option th:each="p : ${patients}"
+                        th:value="${p.healthId.value}"
+                        th:text="${p.healthId.value + ' — ' + p.name}">
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ID du prescripteur (médecin)</label>
+            <input type="text" name="prescriberId" required placeholder="ex: AGT-xxx">
+        </div>
+
+        <h3 class="section-title">💊 Détails du médicament</h3>
+
+        <div class="form-group">
+            <label>Nom du médicament</label>
+            <input type="text" name="drugName" required placeholder="ex: Atorvastatin">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label>DIN</label>
+                <input type="text" name="din" id="dinInput" maxlength="8" required placeholder="ex: 02212345">
+            </div>
+
+            <div class="form-group half">
+                <label>Dosage</label>
+                <input type="text" name="strength" required placeholder="ex: 10 mg">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label>Mode d’administration</label>
+                <select name="adminMethod" required>
+                    <option value="">-- Choisir --</option>
+                    <option>Oral</option>
+                    <option>Injection</option>
+                    <option>Topique</option>
+                    <option>Inhalation</option>
+                </select>
+            </div>
+
+            <div class="form-group half">
+                <label>Fréquence</label>
+                <input type="text" name="frequency" required placeholder="ex: 2 fois par jour">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Instructions spéciales</label>
+            <input type="text" name="instructions" rows="3" required placeholder="ex: À prendre après un repas">
+        </div>
+
+        <div class="form-group">
+            <label>Quantité</label>
+            <input type="number" name="quantity" required min="1">
+        </div>
+
+        <h3 class="section-title">🔁 Renouvellements</h3>
+
+        <div class="form-row">
+            <div class="form-group half">
+                <label>Type de renouvellement</label>
+                <select name="refillType">
+                    <option value="NONE">Non-renouvelable</option>
+                    <option value="MONTHLY">Mensuel</option>
+                    <option value="WEEKLY">Hebdomadaire</option>
+                </select>
+            </div>
+
+            <div class="form-group half">
+                <label>Nombre de renouvellements</label>
+                <input type="number" name="refillCount" min="0" value="0">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary">Créer l’ordonnance</button>
+        </div>
+
+    </form>
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 UYP-PMS | University of Ottawa</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+
+<script>
+    $("#patientSelect").select2();
+    $("#pharmacistSelect").select2();
+
+    $("#dinInput").on("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "").substring(0, 8);
+    });
+</script>
+
+</body>
+</html>

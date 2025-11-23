@@ -1,28 +1,43 @@
 package domain.patient;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-
 
 public class Patient {
+
     private final HealthId healthId;
     private final String name;
     private final LocalDate dateOfBirth;
+
     private Address address;
     private InsuranceInfo insuranceInfo;
-    private final List<Allergy> allergies;
 
-    public Patient(HealthId healthId, String name, LocalDate dateOfBirth,
-        Address address, InsuranceInfo insuranceInfo, List<Allergy> allergies) {
-        this.healthId = Objects.requireNonNull(healthId);
-        this.name = Objects.requireNonNull(name);
-        this.dateOfBirth = Objects.requireNonNull(dateOfBirth);
-        this.address = Objects.requireNonNull(address);
-        this.insuranceInfo = Objects.requireNonNull(insuranceInfo);
-        this.allergies = new ArrayList<>(allergies != null ? allergies : List.of());
+    private String gender;
+    private String languagePreference;
+
+    private List<Allergy> allergies;
+    private List<Medication> currentMedications;
+
+    public Patient(
+            HealthId healthId,
+            String name,
+            LocalDate dateOfBirth,
+            Address address,
+            InsuranceInfo insuranceInfo,
+            String gender,
+            String languagePreference,
+            List<Allergy> allergies,
+            List<Medication> currentMedications
+    ) {
+        this.healthId = healthId;
+        this.name = name;
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+        this.insuranceInfo = insuranceInfo;
+        this.gender = gender;
+        this.languagePreference = languagePreference;
+        this.allergies = allergies;
+        this.currentMedications = currentMedications;
     }
 
     public HealthId getHealthId() { return healthId; }
@@ -30,20 +45,25 @@ public class Patient {
     public LocalDate getDateOfBirth() { return dateOfBirth; }
     public Address getAddress() { return address; }
     public InsuranceInfo getInsuranceInfo() { return insuranceInfo; }
-    public List<Allergy> getAllergies() { return Collections.unmodifiableList(allergies); }
+    public String getGender() { return gender; }
+    public String getLanguagePreference() { return languagePreference; }
+    public List<Allergy> getAllergies() { return allergies; }
+    public List<Medication> getCurrentMedications() { return currentMedications; }
 
-    /** Commande métier — Met à jour l'adresse et l'assurance */
-    public void updateInfo(Address newAddress, InsuranceInfo newInsurance) {
-        this.address = Objects.requireNonNull(newAddress);
-        this.insuranceInfo = Objects.requireNonNull(newInsurance);
+    public void updateInfo(
+            Address newAddress,
+            InsuranceInfo newInsurance,
+            String gender,
+            String languagePreference,
+            List<Allergy> allergies,
+            List<Medication> meds
+    ) {
+        this.address = newAddress;
+        this.insuranceInfo = newInsurance;
+        this.gender = gender;
+        this.languagePreference = languagePreference;
+        this.allergies = allergies;
+        this.currentMedications = meds;
     }
 
-    /** Commandes complémentaires */
-    public void addAllergy(Allergy allergy) { allergies.add(Objects.requireNonNull(allergy)); }
-    public void removeAllergy(Allergy allergy) { allergies.remove(allergy); }
-
-    @Override
-    public String toString() {
-        return String.format("Patient[%s, %s, born %s]", name, healthId, dateOfBirth);
-    }
 }

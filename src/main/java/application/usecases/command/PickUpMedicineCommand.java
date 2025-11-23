@@ -2,10 +2,10 @@ package application.usecases.command;
 
 public class PickUpMedicineCommand {
     public String prescriptionId;
-    public String patientId;
+    public String pickupNotes;
 
-    public PickUpMedicineCommand(String prescriptionId, String patientId) {
+    public PickUpMedicineCommand(String prescriptionId, String pickupNotes) {
         this.prescriptionId = prescriptionId;
-        this.patientId = patientId;
+        this.pickupNotes = pickupNotes;
     }
 }

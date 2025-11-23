@@ -19,8 +19,18 @@ public class PreparePrescriptionFillUseCaseImpl implements PreparePrescriptionFi
 
     @Override
     public void execute(PreparePrescriptionFillCommand command) {
-        Prescription prescription = prescriptionRepository.findById(new PrescriptionId(command.prescriptionId));
-        prescription.markPrepared(null); // agent fictif ici
+
+        Prescription prescription =
+                prescriptionRepository.findById(new PrescriptionId(command.prescriptionId));
+
+        if (prescription == null)
+            throw new IllegalArgumentException("Prescription not found.");
+
+        prescription.markPrepared(
+                command.lotNumber,
+                command.expiryDate
+        );
+
         prescriptionRepository.save(prescription);
     }
 }

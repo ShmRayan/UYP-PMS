@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des ordonnances - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+
+    <div class="header-center">
+        <h1>Umelaphi Yaodian Pharmacy Management System</h1>
+    </div>
+
+    <div class="header-right">
+        <a href="/logout" class="logout-btn">🚪 Logout</a>
+    </div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">🏠 Dashboard</a>
+    <a href="/patients">🧑‍⚕️ Patients</a>
+    <a href="/prescriptions/create">💊 Create Prescription</a>
+    <a href="/prescriptions" class="active">📄 Prescriptions</a>
+</nav>
+
+<main class="container fade-in">
+
+    <h2 style="text-align:center; margin-bottom:25px;">📄 Liste des ordonnances</h2>
+
+    <table class="recent-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>DIN</th>
+            <th>Médicament</th>
+            <th>Quantité</th>
+            <th>Prescripteur</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="p : ${prescriptions}">
+            <td th:text="${p.id.value}"></td>
+            <td th:text="${p.patient != null ? p.patient.name : '—'}"></td>
+            <td th:text="${p.items[0].din}"></td>
+            <td th:text="${p.items[0].drugName}"></td>
+            <td th:text="${p.items[0].quantity}"></td>
+            <td th:text="${p.prescriberId}"></td>
+            <td th:text="${p.date}"></td>
+            <td th:text="${p.status}"></td>
+
+            <td>
+
+                <!-- PREPARE BUTTON -->
+                <button type="button"
+                        th:if="${p.status.name() == 'NEW'}"
+                        class="btn-warning"
+                        th:attr="data-id=${p.id.value}"
+                        onclick="openPrepareModal(this)">
+                    Prepare
+                </button>
+
+                <!-- VERIFY -->
+                <form th:if="${p.status.name() == 'PREPARED'}"
+                      th:action="@{/prescriptions/{id}/verify(id=${p.id.value})}"
+                      method="post">
+                    <button class="btn-primary">Verify</button>
+                </form>
+
+                <!-- PICKUP  -->
+                <button type="button"
+                        th:if="${p.status.name() == 'VERIFIED'}"
+                        class="btn-success"
+                        th:attr="data-id=${p.id.value}"
+                        onclick="openPickupModal(this)">
+                    Pick Up
+                </button>
+
+                <!-- DONE -->
+                <span th:if="${p.status.name() == 'PICKED_UP'}">✔ Récupérée</span>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="btn1">
+        <a href="/prescriptions/create">➕ Créer une ordonnance</a>
+    </div>
+
+</main>
+
+<div id="prepareModal" class="modal">
+    <div class="modal-content">
+
+        <h3>Préparer l’ordonnance</h3>
+
+        <form id="prepareForm" method="post">
+
+            <div class="form-group">
+                <label>Lot Number :</label>
+                <input type="text" name="lotNumber" required>
+            </div>
+
+            <div class="form-group">
+                <label>Expiry Date :</label>
+                <input type="date" name="expiryDate" required>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="submit" class="btn-success">Confirmer</button>
+                <button type="button" class="btn-secondary" onclick="closePrepareModal()">Annuler</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div id="pickupModal" class="modal">
+    <div class="modal-content">
+
+        <h3>Récupération de l’ordonnance</h3>
+
+        <form id="pickupForm" method="post">
+
+            <div class="form-group">
+                <label>Notes / Résumé de la discussion :</label>
+                <textarea name="pickupNotes" rows="4" required></textarea>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="submit" class="btn-success">Confirmer</button>
+                <button type="button" class="btn-secondary" onclick="closePickupModal()">Annuler</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+    function openPrepareModal(button) {
+        const id = button.getAttribute("data-id");
+        const modal = document.getElementById("prepareModal");
+        const form = document.getElementById("prepareForm");
+
+        form.action = "/prescriptions/" + id + "/prepare";
+        modal.style.display = "flex";
+    }
+
+    function closePrepareModal() {
+        document.getElementById("prepareModal").style.display = "none";
+    }
+
+    function openPickupModal(button) {
+        const id = button.getAttribute("data-id");
+        const modal = document.getElementById("pickupModal");
+        const form = document.getElementById("pickupForm");
+
+        form.action = "/prescriptions/" + id + "/pickup";
+        modal.style.display = "flex";
+    }
+
+    function closePickupModal() {
+        document.getElementById("pickupModal").style.display = "none";
+    }
+
+</script>
+
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System | University of Ottawa</p>
+</footer>
+
+</body>
+</html>

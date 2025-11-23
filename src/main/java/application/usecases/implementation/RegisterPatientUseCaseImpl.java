@@ -6,12 +6,7 @@ import org.springframework.stereotype.Service;
 
 import application.usecases.command.RegisterPatientCommand;
 import application.usecases.interfaces.RegisterPatientUseCase;
-import domain.patient.Address;
-import domain.patient.Allergy;
-import domain.patient.HealthId;
-import domain.patient.InsuranceInfo;
-import domain.patient.Patient;
-import domain.patient.PatientRepository;
+import domain.patient.*;
 
 @Service
 public class RegisterPatientUseCaseImpl implements RegisterPatientUseCase {
@@ -24,21 +19,33 @@ public class RegisterPatientUseCaseImpl implements RegisterPatientUseCase {
 
     @Override
     public void execute(RegisterPatientCommand command) {
+
         Address address = new Address(
                 command.street, command.city, command.province, command.postalCode
         );
+
         InsuranceInfo insurance = new InsuranceInfo(
-                command.policyNumber, command.provider, command.expiryDate
+                command.policyNumber, command.provider, command.insuranceExpiry
         );
 
-        List<Allergy> allergies = command.allergies;
+        List<Allergy> allergies = command.allergies.stream()
+                .map(Allergy::new)
+                .toList();
+
+        List<Medication> meds = command.currentMedications.stream()
+                .map(Medication::new)
+                .toList();
+
         Patient patient = new Patient(
                 new HealthId(command.healthId),
                 command.name,
                 command.dateOfBirth,
                 address,
                 insurance,
-                allergies
+                command.gender,
+                command.languagePreference,
+                allergies,
+                meds
         );
 
         patientRepository.save(patient);

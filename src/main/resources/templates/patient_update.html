@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Update Patient - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+    <div class="header-center"><h1>Update Patient</h1></div>
+    <div class="header-right"><a href="/logout" class="logout-btn">Logout</a></div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/patients" class="active">Manage Patients</a>
+</nav>
+
+<main class="container fade-in">
+
+    <div class="edit-header">
+        <a href="/patients" class="back-arrow">← Retour</a>
+        <h2>✏️ Modifier un patient</h2>
+    </div>
+
+    <form action="/patients/update" method="post" class="nice-form">
+
+        <input type="hidden" name="healthId" th:value="${patient.healthId.value}">
+
+        <div class="form-group"><label>Nom</label>
+            <input type="text" th:value="${patient.name}" disabled></div>
+
+        <div class="form-group"><label>Genre</label>
+            <input type="text" name="gender" th:value="${patient.gender}" required>
+        </div>
+
+        <div class="form-group"><label>Langue préférée</label>
+            <input type="text" name="languagePreference" th:value="${patient.languagePreference}" required>
+        </div>
+
+        <div class="form-group"><label>Rue</label>
+            <input type="text" name="street" th:value="${patient.address.street}" required></div>
+
+        <div class="form-group"><label>Ville</label>
+            <input type="text" name="city" th:value="${patient.address.city}" required></div>
+
+        <div class="form-group"><label>Province</label>
+            <input type="text" name="province" th:value="${patient.address.province}" required></div>
+
+        <div class="form-group"><label>Code postal</label>
+            <input type="text" name="postalCode" th:value="${patient.address.postalCode}" required></div>
+
+        <div class="form-group"><label>Numéro de police</label>
+            <input type="text" name="policyNumber" th:value="${patient.insuranceInfo.policyNumber}" required></div>
+
+        <div class="form-group"><label>Assureur</label>
+            <input type="text" name="provider" th:value="${patient.insuranceInfo.provider}" required></div>
+
+        <div class="form-group"><label>Date expiration</label>
+            <input type="date" name="expiryDate" th:value="${patient.insuranceInfo.expiryDate}" required></div>
+
+        <div class="form-group">
+            <label>Allergies (séparées par virgule)</label>
+            <input type="text" name="allergies"
+                th:value="${allergyList}">
+        </div>
+
+        <div class="form-group">
+            <label>Médicaments actuels (séparés par virgule)</label>
+            <input type="text" name="currentMedications" th:value="${medicationList}">
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary">Mettre à jour</button>
+        </div>
+    </form>
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System</p>
+</footer>
+
+</body>
+</html>

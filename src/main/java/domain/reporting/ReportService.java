@@ -24,7 +24,7 @@ public class ReportService {
         int totalPrescriptions = prescriptions.size();
         int totalQuantity = prescriptions.stream()
                 .flatMap(p -> p.getItems().stream())
-                .filter(item -> item.getDIN().equals(din))
+                .filter(item -> item.getDin().equals(din))
                 .mapToInt(item -> item.getQuantity()) 
                 .sum();
 

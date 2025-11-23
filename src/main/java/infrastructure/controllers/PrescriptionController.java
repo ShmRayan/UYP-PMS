@@ -1,142 +1,139 @@
 package infrastructure.controllers;
 
-import java.time.LocalDate;
-import java.util.List;
+import application.usecases.command.CreatePrescriptionCommand;
+import application.usecases.interfaces.CreatePrescriptionUseCase;
 
+import domain.agent.PharmacyAgent;
+import domain.patient.PatientRepository;
+import domain.prescription.Prescription;
+import domain.prescription.PrescriptionId;
+import domain.prescription.PrescriptionRepository;
+
+import domain.security.AuthorizationService;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import application.usecases.command.CreatePrescriptionCommand;
-import application.usecases.command.PreparePrescriptionFillCommand;
-import application.usecases.interfaces.PreparePrescriptionFillUseCase;
-
-import domain.agent.PharmacyAgent;
-import domain.patient.Address;
-import domain.patient.HealthId;
-import domain.patient.InsuranceInfo;
-import domain.patient.Patient;
-
-import domain.prescription.Prescription;
-import domain.prescription.PrescriptionId;
-import domain.prescription.PrescriptionItem;
-import domain.prescription.PrescriptionRepository;
-
-import domain.security.AuthorizationService;
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/prescriptions")
 @SessionAttributes("user")
 public class PrescriptionController {
 
-    private final PrescriptionRepository prescriptionRepository;
-    private final AuthorizationService authorizationService;
-    private final PreparePrescriptionFillUseCase preparePrescriptionUseCase;
+    private final CreatePrescriptionUseCase createPrescriptionUseCase;
+    private final AuthorizationService auth;
+    private final PatientRepository patientRepo;
+    private final PrescriptionRepository prescriptionRepo;
 
+    public PrescriptionController(
+            CreatePrescriptionUseCase createPrescriptionUseCase,
+            AuthorizationService auth,
+            PatientRepository patientRepo,
+            PrescriptionRepository prescriptionRepo
+    ) {
+        this.createPrescriptionUseCase = createPrescriptionUseCase;
+        this.auth = auth;
+        this.patientRepo = patientRepo;
+        this.prescriptionRepo = prescriptionRepo;
+    }
 
-    public PrescriptionController(PrescriptionRepository prescriptionRepository,
-                                  AuthorizationService authorizationService,
-                                  PreparePrescriptionFillUseCase preparePrescriptionUseCase) {
-        this.prescriptionRepository = prescriptionRepository;
-        this.authorizationService = authorizationService;
-        this.preparePrescriptionUseCase = preparePrescriptionUseCase;
+    @GetMapping("")
+    public String list(Model model) {
+        List<Prescription> list = prescriptionRepo.findAll();
+        model.addAttribute("prescriptions", list);
+        return "prescriptions_list";
     }
 
     @GetMapping("/create")
-    public String showCreateForm(Model model, @SessionAttribute("user") PharmacyAgent user) {
+    public String showForm(@SessionAttribute("user") PharmacyAgent user, Model model) {
 
-        if (!authorizationService.hasPermission(user, "createPrescription")) {
-            model.addAttribute("errorMessage", "⛔ Vous n’avez pas la permission de créer une ordonnance.");
+        if (!auth.hasPermission(user, "createPrescription"))
             return "error-unauthorized";
-        }
 
-        model.addAttribute("command", new CreatePrescriptionCommand("", "", "", "", 1));
-        return "create_prescription";
+        model.addAttribute("patients", patientRepo.findAll());
+        return "prescription_create";
     }
 
     @PostMapping("/create")
-    public String createPrescription(
-            @ModelAttribute("command") CreatePrescriptionCommand command,
-            @SessionAttribute("user") PharmacyAgent user,
-            Model model) {
-
-        if (!authorizationService.hasPermission(user, "createPrescription")) {
-            model.addAttribute("errorMessage", "⛔ Accès refusé : vous n’avez pas les droits nécessaires.");
+    public String create(
+            @RequestParam String patientId,
+            @RequestParam String prescriberId,
+            @RequestParam String drugName,
+            @RequestParam String din,
+            @RequestParam String strength,
+            @RequestParam String adminMethod,
+            @RequestParam String frequency,
+            @RequestParam String instructions,
+            @RequestParam int quantity,
+            @RequestParam String refillType,
+            @RequestParam(defaultValue = "0") int refillCount,
+            Model model,
+            @SessionAttribute("user") PharmacyAgent user
+    ) {
+        if (!auth.hasPermission(user, "createPrescription"))
             return "error-unauthorized";
-        }
 
         try {
-            // Item
-            PrescriptionItem item = new PrescriptionItem(
-                    command.instructions,
-                    command.din,
-                    "N/A",
-                    "voir instructions",
-                    command.quantity
+            CreatePrescriptionCommand cmd = new CreatePrescriptionCommand(
+                    patientId, prescriberId, drugName, din, strength,
+                    adminMethod, frequency, instructions, quantity,
+                    refillType, refillCount
             );
 
-            HealthId healthId = new HealthId(command.patientId);
-            Address dummyAddress = new Address("Adresse inconnue", "Ville", "ON", "K1K1K1");
-            InsuranceInfo dummyInsurance = new InsuranceInfo("0000", "Aucune", LocalDate.now().plusYears(1));
+            createPrescriptionUseCase.execute(cmd);
 
-            Patient patient = new Patient(
-                    healthId,
-                    "Patient inconnu",
-                    LocalDate.now(),
-                    dummyAddress,
-                    dummyInsurance,
-                    List.of()
-            );
-
-            Prescription prescription = new Prescription(
-                    new PrescriptionId(),
-                    LocalDate.now(),
-                    List.of(item),
-                    user,
-                    patient
-            );
-
-            prescriptionRepository.save(prescription);
-
-            model.addAttribute("successMessage", "✅ Prescription créée avec succès !");
-            return "redirect:/dashboard";
+            return "redirect:/prescriptions";
 
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Erreur lors de la création : " + e.getMessage());
-            return "create_prescription";
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("patients", patientRepo.findAll());
+            return "prescription_create";
         }
     }
 
-    @GetMapping("/prepare")
-    public String showPrepareForm(Model model, @SessionAttribute("user") PharmacyAgent user) {
+    @PostMapping("/{id}/prepare")
+    public String prepare(
+            @PathVariable String id,
+            @RequestParam String lotNumber,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expiryDate
+    ) {
+        Prescription p = prescriptionRepo.findById(new PrescriptionId(id));
+        if (p == null) return "error";
 
-        if (!authorizationService.hasPermission(user, "preparePrescription")) {
-            model.addAttribute("errorMessage", "⛔ Vous n’avez pas la permission de préparer une ordonnance.");
-            return "error-unauthorized";
-        }
+        p.markPrepared(lotNumber, expiryDate);
+        prescriptionRepo.save(p);
 
-        model.addAttribute("command", new PreparePrescriptionFillCommand("", 1, "", LocalDate.now()));
-        return "prepare_prescription";
+        return "redirect:/prescriptions";
     }
 
-    @PostMapping("/prepare")
-    public String preparePrescription(
-            @ModelAttribute("command") PreparePrescriptionFillCommand command,
-            @SessionAttribute("user") PharmacyAgent user,
-            Model model) {
+    @PostMapping("/{id}/verify")
+    public String verify(@PathVariable String id) {
 
-        if (!authorizationService.hasPermission(user, "preparePrescription")) {
-            model.addAttribute("errorMessage", "⛔ Accès refusé : vous n’avez pas les droits nécessaires.");
-            return "error-unauthorized";
-        }
+        Prescription p = prescriptionRepo.findById(new PrescriptionId(id));
+        if (p == null) return "error";
 
-        try {
-            preparePrescriptionUseCase.execute(command);
-            return "redirect:/dashboard";
+        p.verify();
+        prescriptionRepo.save(p);
 
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Erreur lors de la préparation : " + e.getMessage());
-            return "prepare_prescription";
-        }
+        return "redirect:/prescriptions";
+    }
+
+    @PostMapping("/{id}/pickup")
+    public String pickup(
+            @PathVariable String id,
+            @RequestParam String pickupNotes
+    ) {
+
+        Prescription p = prescriptionRepo.findById(new PrescriptionId(id));
+        if (p == null) return "error";
+
+        p.markPickedUp(pickupNotes);
+        prescriptionRepo.save(p);
+
+        return "redirect:/prescriptions";
     }
 }

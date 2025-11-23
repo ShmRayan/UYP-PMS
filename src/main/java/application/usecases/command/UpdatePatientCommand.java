@@ -1,16 +1,24 @@
 package application.usecases.command;
 
 import java.time.LocalDate;
-
+import java.util.List;
 public class UpdatePatientCommand {
-    public String healthId;
-    public String street;
-    public String city;
-    public String province;
-    public String postalCode;
-    public String policyNumber;
-    public String provider;
-    public LocalDate expiryDate;
+    public final String healthId;
+
+    public final String street;
+    public final String city;
+    public final String province;
+    public final String postalCode;
+
+    public final String policyNumber;
+    public final String provider;
+    public final LocalDate expiryDate;
+
+    public final String gender;
+    public final String languagePreference;
+
+    public final List<String> allergies;
+    public final List<String> currentMedications;
 
     public UpdatePatientCommand(
             String healthId,
@@ -20,7 +28,11 @@ public class UpdatePatientCommand {
             String postalCode,
             String policyNumber,
             String provider,
-            LocalDate expiryDate
+            LocalDate expiryDate,
+            String gender,
+            String languagePreference,
+            List<String> allergies,
+            List<String> currentMedications
     ) {
         this.healthId = healthId;
         this.street = street;
@@ -30,5 +42,9 @@ public class UpdatePatientCommand {
         this.policyNumber = policyNumber;
         this.provider = provider;
         this.expiryDate = expiryDate;
+        this.gender = gender;
+        this.languagePreference = languagePreference;
+        this.allergies = allergies;
+        this.currentMedications = currentMedications;
     }
 }

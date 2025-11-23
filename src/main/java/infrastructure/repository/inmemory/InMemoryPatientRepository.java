@@ -1,6 +1,7 @@
 package infrastructure.repository.inmemory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import domain.patient.HealthId;
@@ -19,5 +20,10 @@ public class InMemoryPatientRepository implements PatientRepository {
     @Override
     public Patient findByHealthId(HealthId id) {
         return patients.get(id.getValue());
+    }
+
+     @Override
+    public List<Patient> findAll() {
+        return patients.values().stream().toList();
     }
 }

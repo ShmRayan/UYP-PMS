@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register Patient - UYP-PMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="header-left">
+        <img th:src="@{/img/uottawa-logo.png}" class="logo">
+        <img th:src="@{/img/pharmacy-icon.png}" class="logo-small">
+    </div>
+    <div class="header-center"><h1>Register Patient</h1></div>
+    <div class="header-right"><a href="/logout" class="logout-btn">Logout</a></div>
+</header>
+
+<nav class="navbar">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/patients" class="active">Manage Patients</a>
+    <a href="/prescriptions/create">Create Prescription</a>
+</nav>
+
+<main class="container fade-in">
+
+    <div class="edit-header">
+        <a href="/patients" class="back-arrow">← Retour</a>
+        <h2>🧑‍⚕️ Enregistrer un patient</h2>
+    </div>
+
+    <form action="/patients/register" method="post" class="nice-form">
+
+        <div class="form-group">
+            <label>Health ID</label>
+            <input type="text" name="healthId" required placeholder="ex: ON1234567890">
+        </div>
+
+        <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Date de naissance</label>
+            <input type="date" name="dateOfBirth" required>
+        </div>
+
+        <div class="form-group">
+            <label>Genre</label>
+            <select name="gender" required>
+                <option value="">-- Choisir --</option>
+                <option value="Male">Homme</option>
+                <option value="Female">Femme</option>
+                <option value="Other">Autre</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Langue préférée</label>
+            <select name="languagePreference" required>
+                <option value="">-- Choisir --</option>
+                <option value="FR">Français</option>
+                <option value="EN">Anglais</option>
+                <option value="Bilingual">Bilingue</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Rue</label>
+            <input type="text" name="street" required>
+        </div>
+
+        <div class="form-group">
+            <label>Ville</label>
+            <input type="text" name="city" required>
+        </div>
+
+        <div class="form-group">
+            <label>Province</label>
+            <input type="text" name="province" required placeholder="ex: ON">
+        </div>
+
+        <div class="form-group">
+            <label>Code postal</label>
+            <input type="text" name="postalCode" required placeholder="ex: K1A0B1">
+        </div>
+
+        <div class="form-group">
+            <label>Numéro de police (optionnel)</label>
+            <input type="text" name="policyNumber">
+        </div>
+
+        <div class="form-group">
+            <label>Assureur (optionnel)</label>
+            <input type="text" name="provider">
+        </div>
+
+        <div class="form-group">
+            <label>Date expiration assurance (optionnel)</label>
+            <input type="date" name="expiryDate">
+        </div>
+
+        <div class="form-group">
+            <label>Allergies (séparées par virgule)</label>
+            <input type="text" name="allergies" placeholder="ex: penicillin, ibuprofen">
+        </div>
+
+        <div class="form-group">
+            <label>Médicaments actuels (séparés par virgule)</label>
+            <input type="text" name="currentMedications" placeholder="ex: Tylenol, Ventolin">
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary">Enregistrer</button>
+        </div>
+    </form>
+
+
+</main>
+
+<footer class="footer">
+    <p>© 2025 UYP Pharmacy Management System</p>
+</footer>
+
+</body>
+</html>

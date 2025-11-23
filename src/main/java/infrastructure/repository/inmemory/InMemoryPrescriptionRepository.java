@@ -35,7 +35,21 @@ public class InMemoryPrescriptionRepository implements PrescriptionRepository {
     public List<Prescription> findByDINAndPeriod(String din, ReportPeriod period) {
         return prescriptions.values().stream()
                 .filter(p -> p.getItems().stream()
-                        .anyMatch(i -> i.getDIN().equals(din)))
+                        .anyMatch(i -> i.getDin().equals(din)))
                 .toList();
+    }
+
+    @Override
+    public List<Prescription> findAll() {
+        return prescriptions.values().stream().toList();
+    }
+
+    @Override
+    public String findLastId() {
+        return prescriptions.keySet()
+                .stream()
+                .sorted()
+                .reduce((first, second) -> second)
+                .orElse(null);
     }
 }
