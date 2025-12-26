@@ -93,7 +93,7 @@ MySQL database: **localhost:6033 → 3306**
 Only one account exists initially:
 
 #### Administrator
-- **Email:** admin@uypms.com  
+- **Email:** admin@uyp.com  
 - **Password:** admin123  
 
 The administrator can then create:
