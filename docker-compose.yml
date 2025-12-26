@@ -14,9 +14,7 @@ services:
       timeout: 5s
 
   uyp-pms:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/shmrayan/uyp-pms:latest
     container_name: uyp-pms
     ports:
       - "8080:8080"
