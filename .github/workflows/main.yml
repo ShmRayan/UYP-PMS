@@ -25,13 +25,25 @@ jobs:
       - name: Build with Gradle (and run tests)
         run: ./gradlew build
 
-  docker-build:
-    needs: build-and-test 
+  ddocker-build:
+    needs: build-and-test
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: |
-          docker build . --file Dockerfile --tag uyp-pms-app:latest
-          echo "L'image Docker a été générée avec succès."
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/uyp-pms:latest
